@@ -19,7 +19,7 @@ CarBluetooth bluetooth(RxD, TxD);
 #define CMD_STOP        'S'
 
 #define SPEED_STEPS 20
-uint8_t speed0 = 100;
+uint8_t speed0 = 200;
 
 //--------------------------------------
 //Ultrasonic
@@ -35,14 +35,18 @@ float cmMsec, inMsec;
 
 //--------------------------------------
 //PWM speed control
-#define MIN_DIST 10 //Minimum needed reading value of ultrassonic sensor (>0)
-#define MAX_DIST 400 //Maximum reading value of ultrassonic sensor
+#define MIN_DIST 20 //Minimum needed reading value of ultrassonic sensor (>0)
+#define MAX_DIST 80 //Maximum reading value of ultrassonic sensor
 //#define enA 9 //Enable Pin of motor A
 //#define enB 8 //Enable Pin of motor B
+
+int distance;
 
 //--------------------------------------
 
 void setup(){
+  Serial.begin(9600);
+
   disp.set(BRIGHT_TYPICAL);//BRIGHT_TYPICAL = 2,BRIGHT_DARKEST = 0,BRIGHTEST = 7;
   disp.init();
   motordriver.init();
@@ -75,7 +79,10 @@ void loop(){
 
 
 void controlCar(uint8_t cmd){
-  int pwmOutput = map(distance, MIN_DIST, MAX_DIST, 0, 255)
+  int pwmOutput = map(cmMsec, MIN_DIST, MAX_DIST, 0, 253);
+  if (pwmOutput <= MIN_DIST){
+    pwmOutput = 0;
+  }
   switch(cmd)
   {
     case CMD_FORWARD:     
@@ -136,10 +143,14 @@ void controlCar(uint8_t cmd){
 }
 
 void speedUp(){
-  if(speed0 < 236)speed0 += SPEED_STEPS;
-  else speed0 = 255;
+  if(speed0 < 236){
+    speed0 += SPEED_STEPS;
+  }
+  else {
+  speed0 = 255;
   motordriver.setSpeed(speed0,MOTORA);
   motordriver.setSpeed(speed0,MOTORB);
+  }
 }
 
 void speedDown(){
@@ -152,6 +163,8 @@ void ultrasonicDisplay()
 {
   long microsec = ultrasonic.timing();
   cmMsec = ultrasonic.convert(microsec, Ultrasonic::CM);
-  inMsec = ultrasonic.convert(microsec, Ultrasonic::IN);
+  //inMsec = ultrasonic.convert(microsec, Ultrasonic::IN);
+  Serial.print(", CM: ");
+  Serial.println(cmMsec);
   disp.display((int16_t)cmMsec);//in centimeters
 }
