@@ -19,6 +19,9 @@ CarBluetooth bluetooth(RxD, TxD);
 #define CMD_LEFT_FRONT  'L'
 #define CMD_STOP        'S'
 
+#define TESTE_COD_A 0
+#define TESTE_COD_O 0 
+
 #define SPEED_STEPS 20
 uint8_t speed0 = 200;
 
@@ -44,6 +47,8 @@ float cmMsec, inMsec;
 int distance;
 
 //--------------------------------------
+
+Teste t1;
 
 void setup(){
   Serial.begin(9600);
@@ -74,18 +79,41 @@ uint8_t new_status = car_status;
 //---------------------------------------
 
 void loop(){
-  ultrasonicDisplay();
-  bt_command = bluetooth.readByte();
-  if(bt_command != CMD_INVALID){
-  controlCar(bt_command);
+  if(TESTE_COD_A==0 && TESTE_COD_O==0){
+    ultrasonicDisplay();
+    bt_command = bluetooth.readByte();
+    if(bt_command != CMD_INVALID){
+    controlCar(bt_command);
+    }
   }
-
+  else{  
+    controlCar(bt_command);
+    delay(100);
+  }
 }
 
 //----------------------------------------
 
 void controlCar(uint8_t cmd){
-  int pwmOutput = map(cmMsec, MIN_DIST, MAX_DIST, 0, 253);
+
+  int pwmOutput;
+  
+  if(TESTE_COD_A==0 && TESTE_COD_O==0)pwmOutput = map(cmMsec, MIN_DIST, MAX_DIST, 0, 253);
+
+  if(TESTE_COD_O){
+    cmMsec = t1.entradas_Ordem();
+    pwmOutput = map(cmMsec, MIN_DIST, MAX_DIST, 0, 253);
+    Serial.println("Entrada: " + String(cmMsec));
+    Serial.println("Saida: " + String(pwmOutput));
+  }
+
+  if(TESTE_COD_A){
+    cmMsec = t1.entradas_Aleatorio();
+    pwmOutput = map(cmMsec, MIN_DIST, MAX_DIST, 0, 253);
+    Serial.println("Entrada: " + String(cmMsec));
+    Serial.println("Saida: " + String(pwmOutput));
+  }
+  
   if (pwmOutput <= MIN_DIST){
     pwmOutput = 0;
   }
