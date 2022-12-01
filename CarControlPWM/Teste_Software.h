@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#define REP_MAX 5
+#define REP_MAX 2
 
 
 

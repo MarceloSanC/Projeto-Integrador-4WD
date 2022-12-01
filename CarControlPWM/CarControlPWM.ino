@@ -103,15 +103,15 @@ void controlCar(uint8_t cmd){
   if(TESTE_COD_O){
     cmMsec = t1.entradas_Ordem();
     pwmOutput = map(cmMsec, MIN_DIST, MAX_DIST, 0, 253);
-    Serial.println("Entrada: " + String(cmMsec));
-    Serial.println("Saida: " + String(pwmOutput));
+    Serial.print("Input: " + String(cmMsec) + " (cm) -> ");
+    Serial.println("Output: " + String(pwmOutput) + " (PWM)");
   }
 
   if(TESTE_COD_A){
     cmMsec = t1.entradas_Aleatorio();
     pwmOutput = map(cmMsec, MIN_DIST, MAX_DIST, 0, 253);
-    Serial.println("Entrada: " + String(cmMsec));
-    Serial.println("Saida: " + String(pwmOutput));
+    Serial.print("Input: " + String(cmMsec) + " (cm) -> ");
+    Serial.println("Output: " + String(pwmOutput) + " (PWM)");
   }
   
   if (pwmOutput <= MIN_DIST){
