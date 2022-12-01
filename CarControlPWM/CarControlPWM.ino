@@ -5,6 +5,7 @@
 #include "MotorDriver.h"
 #include <Ultrasonic.h>
 #include "TM1637.h"
+#include "Teste_Software.h"
 
 #define RxD 2//D2 of Arduino should connect to TX of the Serial Bluetooth module
 #define TxD 4//D4 of Arduino should connect to RX of the Serial Bluetooth module
@@ -60,6 +61,8 @@ void setup(){
 
 }
 
+//--------------------------------------
+
 uint8_t bt_command;
 
 #define CAR_STOP 0
@@ -67,6 +70,8 @@ uint8_t bt_command;
 #define CAR_BACK 2
 uint8_t car_status = CAR_STOP;
 uint8_t new_status = car_status;
+
+//---------------------------------------
 
 void loop(){
   ultrasonicDisplay();
@@ -77,6 +82,7 @@ void loop(){
 
 }
 
+//----------------------------------------
 
 void controlCar(uint8_t cmd){
   int pwmOutput = map(cmMsec, MIN_DIST, MAX_DIST, 0, 253);
@@ -142,6 +148,8 @@ void controlCar(uint8_t cmd){
   }
 }
 
+//--------------------------------------------------
+
 void speedUp(){
   if(speed0 < 236){
     speed0 += SPEED_STEPS;
@@ -153,12 +161,17 @@ void speedUp(){
   }
 }
 
+//--------------------------------------------------
+
 void speedDown(){
   if(speed0 > 70)speed0 -= SPEED_STEPS;
   else speed0 = 50;
   motordriver.setSpeed(speed0,MOTORA);
   motordriver.setSpeed(speed0,MOTORB);
 }
+
+//--------------------------------------------------
+
 void ultrasonicDisplay()
 {
   long microsec = ultrasonic.timing();
@@ -168,3 +181,5 @@ void ultrasonicDisplay()
   Serial.println(cmMsec);
   disp.display((int16_t)cmMsec);//in centimeters
 }
+
+//--------------------------------------------------
